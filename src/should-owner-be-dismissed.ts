@@ -9,7 +9,8 @@ export function shouldOwnerBeDismissed(
     return false
   }
   const { dismissOnly } = getInputs()
-  if (dismissOnly.includes(`${authorLogin}`)) {
+  console.log({ teamMembers })
+  if (dismissOnly.includes(`@${authorLogin}`)) {
     return true
   }
   const allDismissibleReviewers = dismissOnly
