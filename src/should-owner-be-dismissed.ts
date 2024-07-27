@@ -9,15 +9,20 @@ export function shouldOwnerBeDismissed(
     return false
   }
   const { dismissOnly } = getInputs()
+
+  console.log({ inputs: getInputs() })
   console.log({ teamMembers })
+
   if (dismissOnly.includes(`@${authorLogin}`)) {
     return true
   }
   const allDismissibleReviewers = dismissOnly
     .flatMap(reviewer => teamMembers[reviewer])
     .filter(isPresent)
+
   console.log(
     `Reviewers who should be dismissed: ${allDismissibleReviewers.join(',')}`,
   )
+
   return allDismissibleReviewers.includes(authorLogin)
 }

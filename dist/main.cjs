@@ -55586,6 +55586,7 @@ function shouldOwnerBeDismissed(teamMembers, authorLogin) {
     return false;
   }
   const { dismissOnly } = getInputs();
+  console.log({ inputs: getInputs() });
   console.log({ teamMembers });
   if (dismissOnly.includes(`@${authorLogin}`)) {
     return true;
@@ -55594,7 +55595,7 @@ function shouldOwnerBeDismissed(teamMembers, authorLogin) {
   console.log(
     `Reviewers who should be dismissed: ${allDismissibleReviewers.join(",")}`
   );
-  return allDismissibleReviewers.includes(`@${authorLogin}`);
+  return allDismissibleReviewers.includes(authorLogin);
 }
 
 // src/calculate-reviews-to-dismiss.ts
