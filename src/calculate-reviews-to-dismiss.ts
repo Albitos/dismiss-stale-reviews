@@ -2,6 +2,7 @@ import { debug } from '@actions/core'
 import { groupReviewsByCommit } from './group-reviews-by-commit.ts'
 import { getOctokit } from './get-octokit.ts'
 import { getTeamData } from './get-team-data.ts'
+import { shouldOwnerBeDismissed } from './should-owner-be-dismissed.js'
 
 export interface Review {
   author: {
@@ -92,12 +93,18 @@ export const calculateReviewToDismiss = async <TReview extends Review>({
         const { author } = review
         let isDismissed = false
 
+
         console.log(
           `Considering review from ${author?.login} and file changes between ${review.commit?.oid} (reviewed commit) and ${headCommit} (head commit)`,
         )
 
+        if (!shouldOwnerBeDismissed(teamMembers, author?.login)) {
+          console.log(
+            `The reviewer ${author?.login} is not on the list of reviewers to dismiss - keeping the review.`,
+          )
+        }
         // in case there is no diff because head and review commit matches, skip that review
-        if (review.commit?.oid === headCommit) {
+        else if (review.commit?.oid === headCommit) {
           console.log(
             'The review commit sha is the same as head commit sha. That means that there were no changes since the review, or the base branch was merged/rebased cleanly.',
           )
