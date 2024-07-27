@@ -19,5 +19,5 @@ export function shouldOwnerBeDismissed(
   console.log(
     `Reviewers who should be dismissed: ${allDismissibleReviewers.join(',')}`,
   )
-  return allDismissibleReviewers.includes(`@${authorLogin}`)
+  return allDismissibleReviewers.includes(authorLogin)
 }
