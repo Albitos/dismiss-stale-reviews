@@ -17,6 +17,8 @@ export function shouldOwnerBeDismissed(
     return true
   }
   const allDismissibleReviewers = dismissOnly
+    .filter(isPresent)
+    .map(reviewer => (reviewer[0] === '@' ? reviewer.substring(1) : reviewer))
     .flatMap(reviewer => teamMembers[reviewer])
     .filter(isPresent)
 

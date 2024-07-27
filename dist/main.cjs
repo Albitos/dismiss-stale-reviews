@@ -55591,7 +55591,7 @@ function shouldOwnerBeDismissed(teamMembers, authorLogin) {
   if (dismissOnly.includes(`@${authorLogin}`)) {
     return true;
   }
-  const allDismissibleReviewers = dismissOnly.flatMap((reviewer) => teamMembers[reviewer]).filter(isPresent);
+  const allDismissibleReviewers = dismissOnly.filter(isPresent).map((reviewer) => reviewer[0] === "@" ? reviewer.substring(1) : reviewer).flatMap((reviewer) => teamMembers[reviewer]).filter(isPresent);
   console.log(
     `Reviewers who should be dismissed: ${allDismissibleReviewers.join(",")}`
   );
