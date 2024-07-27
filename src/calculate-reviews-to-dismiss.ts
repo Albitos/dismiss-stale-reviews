@@ -93,7 +93,6 @@ export const calculateReviewToDismiss = async <TReview extends Review>({
         const { author } = review
         let isDismissed = false
 
-
         console.log(
           `Considering review from ${author?.login} and file changes between ${review.commit?.oid} (reviewed commit) and ${headCommit} (head commit)`,
         )

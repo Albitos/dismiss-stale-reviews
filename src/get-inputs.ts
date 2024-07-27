@@ -11,6 +11,8 @@ export const getInputs = () => {
   const ignoreFiles = getMultilineInput('ignore-files')
   const noOwnerAction = getInput('no-owner-action', { required: true })
   const forcePushAction = getInput('force-push-action', { required: true })
+  const dismissOnly =
+    getMultilineInput('dismiss-only', { required: false }) ?? ''
 
   if (!isValidDismissActionInput(noOwnerAction)) {
     throw new Error(
@@ -29,5 +31,6 @@ export const getInputs = () => {
     ignoreFiles,
     noOwnerAction,
     forcePushAction,
+    dismissOnly,
   }
 }

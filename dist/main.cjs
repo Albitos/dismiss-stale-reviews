@@ -49546,7 +49546,7 @@ var chalkStderr = createChalk({ level: stderrColor ? stderrColor.level : 0 });
 var import_core5 = __toESM(require_core(), 1);
 
 // src/calculate-reviews-to-dismiss.ts
-var import_core2 = __toESM(require_core(), 1);
+var import_core3 = __toESM(require_core(), 1);
 
 // src/group-reviews-by-commit.ts
 var import_core = __toESM(require_core(), 1);
@@ -55550,6 +55550,52 @@ var getTeamData = async ({
   };
 };
 
+// src/get-inputs.ts
+var import_core2 = __toESM(require_core(), 1);
+function isValidDismissActionInput(dismissAction) {
+  return dismissAction === "dismiss-all" || dismissAction === "dismiss-none";
+}
+var getInputs = () => {
+  const ghToken = (0, import_core2.getInput)("token", { required: true });
+  const ignoreFiles = (0, import_core2.getMultilineInput)("ignore-files");
+  const noOwnerAction = (0, import_core2.getInput)("no-owner-action", { required: true });
+  const forcePushAction = (0, import_core2.getInput)("force-push-action", { required: true });
+  const dismissOnly = (0, import_core2.getMultilineInput)("dismiss-only", { required: false }) ?? "";
+  if (!isValidDismissActionInput(noOwnerAction)) {
+    throw new Error(
+      `The no-owner-action input accepts only "dismiss-all" or "dismiss-none" enum. Got "${noOwnerAction}"`
+    );
+  }
+  if (!isValidDismissActionInput(forcePushAction)) {
+    throw new Error(
+      `The force-push-action input accepts only "dismiss-all" or "dismiss-none" enum. Got "${forcePushAction}"`
+    );
+  }
+  return {
+    ghToken,
+    ignoreFiles,
+    noOwnerAction,
+    forcePushAction,
+    dismissOnly
+  };
+};
+
+// src/should-owner-be-dismissed.ts
+function shouldOwnerBeDismissed(teamMembers, authorLogin) {
+  if (!authorLogin) {
+    return false;
+  }
+  const { dismissOnly } = getInputs();
+  if (dismissOnly.includes(`${authorLogin}`)) {
+    return true;
+  }
+  const allDismissibleReviewers = dismissOnly.flatMap((reviewer) => teamMembers[reviewer]).filter(isPresent);
+  console.log(
+    `Reviewers who should be dismissed: ${allDismissibleReviewers.join(",")}`
+  );
+  return allDismissibleReviewers.includes(`@${authorLogin}`);
+}
+
 // src/calculate-reviews-to-dismiss.ts
 var calculateReviewToDismiss = async ({
   latestReviews,
@@ -55602,7 +55648,11 @@ var calculateReviewToDismiss = async ({
         console.log(
           `Considering review from ${author?.login} and file changes between ${review.commit?.oid} (reviewed commit) and ${headCommit} (head commit)`
         );
-        if (review.commit?.oid === headCommit) {
+        if (!shouldOwnerBeDismissed(teamMembers, author?.login)) {
+          console.log(
+            `The reviewer ${author?.login} is not on the list of reviewers to dismiss - keeping the review.`
+          );
+        } else if (review.commit?.oid === headCommit) {
           console.log(
             "The review commit sha is the same as head commit sha. That means that there were no changes since the review, or the base branch was merged/rebased cleanly."
           );
@@ -55640,7 +55690,7 @@ ${changedFilesOwnedByAuthorsTeam.join(
               reviewsToDismiss.push(review);
               isDismissed = true;
             } else {
-              (0, import_core2.debug)(
+              (0, import_core3.debug)(
                 `User ${author.login} is not member of ${teamOwnership} team`
               );
             }
@@ -57270,34 +57320,6 @@ function fixResponseChunkedTransferBadEnding(request2, errorCallback) {
 var getOctokit = ({ ghToken }) => {
   const OctokitWithPlugins = Octokit2.plugin(paginateGraphql);
   return new OctokitWithPlugins({ auth: ghToken, request: { fetch } });
-};
-
-// src/get-inputs.ts
-var import_core4 = __toESM(require_core(), 1);
-function isValidDismissActionInput(dismissAction) {
-  return dismissAction === "dismiss-all" || dismissAction === "dismiss-none";
-}
-var getInputs = () => {
-  const ghToken = (0, import_core4.getInput)("token", { required: true });
-  const ignoreFiles = (0, import_core4.getMultilineInput)("ignore-files");
-  const noOwnerAction = (0, import_core4.getInput)("no-owner-action", { required: true });
-  const forcePushAction = (0, import_core4.getInput)("force-push-action", { required: true });
-  if (!isValidDismissActionInput(noOwnerAction)) {
-    throw new Error(
-      `The no-owner-action input accepts only "dismiss-all" or "dismiss-none" enum. Got "${noOwnerAction}"`
-    );
-  }
-  if (!isValidDismissActionInput(forcePushAction)) {
-    throw new Error(
-      `The force-push-action input accepts only "dismiss-all" or "dismiss-none" enum. Got "${forcePushAction}"`
-    );
-  }
-  return {
-    ghToken,
-    ignoreFiles,
-    noOwnerAction,
-    forcePushAction
-  };
 };
 
 // src/main.ts

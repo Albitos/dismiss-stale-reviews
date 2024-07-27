@@ -21,9 +21,9 @@ inputs:
     required: false
     description: What should happen if the git diff couldn't be resolved due to force push. Valid options are `"dismiss-all"` and `"dismiss-none"`
     default: dismiss-all
-  team-whitelist:
+  dismiss-only:
     required: false
-    description: If set, only reviews that belong to these owners will be dismissed.
+    description: List of users and teams that should be dismissed if their files changed. If set, only reviews that belong to these owners will be dismissed. The list is new line separated.
 
 runs:
   using: 'node20'

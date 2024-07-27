@@ -1,14 +1,22 @@
 import { isPresent } from './type-guards.js'
+import { getInputs } from './get-inputs.js'
 
-export function shouldOwnerBeDismissed(teamMembers: Record<string, string[]>, authorLogin?: string) {
+export function shouldOwnerBeDismissed(
+  teamMembers: Record<string, string[]>,
+  authorLogin?: string,
+) {
   if (!authorLogin) {
-    return false;
+    return false
   }
-  const dismissOnlyFrom = ['@test-org-ws/test-team'];
-  if (dismissOnlyFrom.includes(authorLogin)) {
-    return true;
+  const { dismissOnly } = getInputs()
+  if (dismissOnly.includes(`${authorLogin}`)) {
+    return true
   }
-  const allDismissibleReviewers = dismissOnlyFrom.flatMap(reviewer => teamMembers[reviewer]).filter(isPresent)
-  console.log(`Reviewers who should be dismissed: ${allDismissibleReviewers.join(',')}`)
-  return allDismissibleReviewers.includes(`@${authorLogin}`);
+  const allDismissibleReviewers = dismissOnly
+    .flatMap(reviewer => teamMembers[reviewer])
+    .filter(isPresent)
+  console.log(
+    `Reviewers who should be dismissed: ${allDismissibleReviewers.join(',')}`,
+  )
+  return allDismissibleReviewers.includes(`@${authorLogin}`)
 }
