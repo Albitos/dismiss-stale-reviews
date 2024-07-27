@@ -57429,7 +57429,8 @@ ${reviewsToDismissContext.reviewsWithoutHistory.map(({ author }) => author?.logi
           </details>
         `.replace(/  +/g, " ")
       });
-    } else if (reviewsToDismissContext.reviewsToDismiss.length) {
+    }
+    if (reviewsToDismissContext?.reviewsToDismiss?.length) {
       logReviewsToDismiss(reviewsToDismissContext.reviewsToDismiss);
       await dismissReviews({
         octokit,

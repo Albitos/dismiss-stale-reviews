@@ -146,7 +146,9 @@ const run = async () => {
           </details>
         `.replace(/  +/g, ' '),
       })
-    } else if (reviewsToDismissContext.reviewsToDismiss.length) {
+    }
+
+    if (reviewsToDismissContext?.reviewsToDismiss?.length) {
       logReviewsToDismiss(reviewsToDismissContext.reviewsToDismiss)
 
       await dismissReviews({
