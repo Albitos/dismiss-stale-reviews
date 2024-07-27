@@ -1,4 +1,4 @@
-name: Dismiss stale PR reviews based on ownership
+name: Dismiss stale PR reviews based on ownership - with config
 description: Dismiss all reviews that are stale. The staleness is decided based on changed files and Codeowners file.
 author: Balvajs
 branding:
